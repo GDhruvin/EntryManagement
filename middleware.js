@@ -26,7 +26,7 @@ export function middleware(request) {
   const path = request.nextUrl.pathname;
   const cookieData = request.cookies.get("authData")?.value;
 
-  if (path === "/" && !cookieData) {
+  if ((path === "/" || path === "/details") && !cookieData) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (path === "/login") {
@@ -44,5 +44,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/", "/login"],
+  matcher: ["/", "/login", "/details"],
 };

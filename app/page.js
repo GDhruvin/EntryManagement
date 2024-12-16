@@ -37,6 +37,8 @@ import {
   logout_API,
   updateClient_API,
 } from "@/lib/define";
+import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const clientSchema = yup
   .object({
@@ -172,6 +174,7 @@ export default function Home() {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
+      allowOutsideClick: false,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
@@ -330,6 +333,7 @@ export default function Home() {
           Swal.fire({
             icon: "info",
             text: response.data.message,
+            allowOutsideClick: false,
           });
         }
       })
@@ -339,14 +343,28 @@ export default function Home() {
           Swal.fire({
             icon: "error",
             text: _error.response.data.message,
+            allowOutsideClick: false,
           });
         } else {
           Swal.fire({
             icon: "error",
             text: "Internal Server Error",
+            allowOutsideClick: false,
           });
         }
       });
+  };
+
+  const handleNavigate = (client) => {
+    console.log("client", client);
+    const navigateData = {
+      id: client._id,
+      name: client.name,
+      email: client.email,
+      mobileNumber: client.mobileNumber,
+    };
+    const queryString = new URLSearchParams(navigateData).toString();
+    router.push(`/details?${queryString}`);
   };
 
   return (
@@ -534,6 +552,7 @@ export default function Home() {
           Client Management
         </Typography>
         <Button
+          startIcon={<LogoutIcon />}
           onClick={handleLogout}
           sx={{
             bgcolor: "error.main",
@@ -623,22 +642,24 @@ export default function Home() {
           {/* Sticky Table Header */}
           <TableHead>
             <TableRow>
-              {["Name", "Mobile", "Email", "Actions"].map((header) => (
-                <TableCell
-                  key={header}
-                  sx={{
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 1,
-                    bgcolor: "#1A202C",
-                    color: "#FBBF24",
-                    textAlign: "center",
-                    verticalAlign: "middle",
-                  }}
-                >
-                  {header}
-                </TableCell>
-              ))}
+              {["Name", "Mobile", "Email", "Information", "Actions"].map(
+                (header) => (
+                  <TableCell
+                    key={header}
+                    sx={{
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                      bgcolor: "#1A202C",
+                      color: "#FBBF24",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                    }}
+                  >
+                    {header}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
 
@@ -672,6 +693,24 @@ export default function Home() {
                   }}
                 >
                   {client.email}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "#E2E8F0",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    startIcon={<DriveFileMoveIcon />}
+                    onClick={() => {
+                      handleNavigate(client);
+                    }}
+                  >
+                    Data
+                  </Button>
                 </TableCell>
                 <TableCell
                   sx={{ textAlign: "center", verticalAlign: "middle" }}
